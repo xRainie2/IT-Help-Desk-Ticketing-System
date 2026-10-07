@@ -11,6 +11,7 @@ class Ticket:
         self.status = "Open"
         self.priority = priority
         self.assigned_technician = None #Is set to "None" because a ticket isn't automatically assigned to a technician by default
+        self.upload = None
         
     def close(self):
         self.status = "Closed"
@@ -20,6 +21,7 @@ class Ticket:
     
     def assign_technician(self, technician):
         self.assigned_technician = technician
+        
         
         
     #converts objects in tickets into a dictionary so that it's storable in a JSON text file  
@@ -36,7 +38,8 @@ class Ticket:
             "submitted_by": self.submitted_by,
             "status": self.status,
             "priority": self.priority,
-            "technician" : tech_data
+            "technician" : tech_data,
+            "upload" : self.upload
         } 
 
 #A class with objects for technicians assigned (or not currently assigned) to tickets
@@ -45,6 +48,7 @@ class Technician:
     def __init__(self, id, name):
         self.id = id
         self.name = name
+
     
     def __str__(self):
         return self.name
@@ -85,6 +89,8 @@ def save_tickets():
 
 def dict_to_ticket(data):
     ticket = Ticket(data["id"], data["title"], data["description"], data["submitted_by"], data["priority"])
+    
+    ticket.upload = data["upload"]
 
     if data["technician"] is not None:
         technician = dict_to_technician(data["technician"])
@@ -127,79 +133,3 @@ def find_technician(tech_id):
         if tech.id == tech_id:
             return tech
     return None
-
-
-while True: #This executes as long as a choice other than option 5 (break) is inputted
-    print("1. View tickets")
-    print("2. Create ticket")
-    print("3. Update status")
-    print("4. Assign technician")
-    print("5. Exit")
-    choice = input("Choose an option 1-5: ")
-    
-    if choice == "1": #Loops through and outputs each ticket
-        for ticket in tickets: 
-            if ticket.assigned_technician == None: #If there is no technician assigned to a ticket, outputs "Unassigned" else, technicians name
-                print(f"Title: {ticket.title}  | Status: {ticket.status} | Technician: Unassigned")
-            else:
-                print(f"Title: {ticket.title}  | Status: {ticket.status} | Technician: {ticket.assigned_technician}")
-    elif choice == "2": #Loops through each ticket in list of tickets
-        new_ticket = create_ticket()
-        tickets.append(new_ticket)
-        save_tickets()
-    elif choice == "3": #Updates the status of the ticket if the ticket == the id that is inputted
-        try:
-            your_id = int(input("Enter your id: "))
-        except ValueError:
-            print("Please enter a valid number.")
-            continue
-        id_stat_update = (input("Update status: "))
-        found = False
-        for ticket in tickets:
-            if your_id == ticket.id:
-                ticket.update_status(id_stat_update)
-                found = True
-        if found:        
-            save_tickets()
-        else:
-            print("No ticket found with that ID.")
-    elif choice == "4": #Asks for ticket and technician ID, then assigns ticket to technician
-        try:
-            tickets_id = int(input("Ticket ID: "))
-            users_id = int(input("User ID: "))
-        except ValueError:
-            print("Please enter a valid number.")
-            continue
-        found = False
-        for ticket in tickets:
-            if tickets_id == ticket.id:
-                technician = find_technician(users_id)
-                if technician is None:
-                    print("No technician found with this ID.")
-                else:
-                    ticket.assign_technician(technician)
-                    found = True
-        if found:        
-            save_tickets()
-        else:
-            print("No ticket found with that ID.")  
-    elif choice == "5": #Exists; breaks while-loop
-        print("Exiting...")
-        break
-    
-    
-
-
-    
-
-
-          
-          
-    
-
-
-
-    
-
-    
-

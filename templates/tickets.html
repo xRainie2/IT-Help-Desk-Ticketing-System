@@ -1,0 +1,64 @@
+<h1>Tickets</h1>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<a href="/new">Create a new ticket</a>
+
+<p>
+    <a href="/tickets">ALL</a>
+    <a href="/tickets?status=Open">Open</a>
+    <a href="/tickets?status=In Progress">In Progress</a>
+    <a href="/tickets?status=Closed">Closed</a>
+</p>
+
+<form method="get" action="/tickets">
+    <input type="text" name="search" placeholder="Search by title...">
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Technician</th>
+        <th>Update</th>
+        <th>Assign</th>
+        <th>File</th>
+    </tr>
+    {% for ticket in tickets %}
+    <tr>
+        <td>{{ ticket.id }}</td>
+        <td>{{ ticket.title }}</td>
+        <td>{{ ticket.status }}</td>
+        <td>{{ ticket.assigned_technician or "Unassigned" }}</td>
+        <td>
+             <form method="post" action="/update/{{ ticket.id }}">
+                <select name="status">
+                    <option>Open</option>
+                    <option>In Progress</option>
+                    <option>Closed</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+        <td>
+            <form method="post" action="/assign/{{ ticket.id }}">
+                <select name="technician_id">
+                    {% for tech in technicians %}
+                    <option value="{{ tech.id }}">{{ tech.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Assign</button>
+            </form>
+        </td>
+        <td>
+            {% if ticket.upload %}
+                <a href="/uploads/{{ ticket.upload }}" target="_blank">{{ ticket.upload }}</a>
+            {%else%}
+                -
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>

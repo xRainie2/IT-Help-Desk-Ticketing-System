@@ -1,0 +1,38 @@
+class Ticket: 
+    def __init__(self, id, title, description, submitted_by, priority):
+        self.id = id
+        self.title = title
+        self.description = description
+        self.submitted_by = submitted_by
+        self.status = "Open"
+        self.priority = priority
+        
+        def close(self):
+            self.status = "Closed"
+
+tickets = []
+        
+def create_ticket():
+    id = len(tickets) + 1
+    title = title
+    description = description
+    submitted_by = submitted_by
+    priority = priority
+    
+    return (id, title, description, submitted_by, priority)
+    
+new_ticket = create_ticket()
+tickets.append(new_ticket)
+
+for ticket in tickets:
+    print(f"Title: {ticket.title}  | Status: {ticket.status} ")
+    
+
+    
+
+
+    
+    
+    
+    
+    

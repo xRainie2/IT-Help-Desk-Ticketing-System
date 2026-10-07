@@ -187,19 +187,13 @@ while True: #This executes as long as a choice other than option 5 (break) is in
         print("Exiting...")
         break
     
-    
-
-
-    
-
-
-          
-          
-    
+                
+            
 
 
 
     
-
     
-
+    
+    
+    
